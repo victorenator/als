@@ -11,11 +11,17 @@ Exported attributes:
 
 Asus Zenbook:
 ==
-- _SB.ALS._HID() // Hardware ID. Return ACPI0008
-- _SB.ALS._STA() // Status. Always return 0x0B
-- _SB.ALS._DIS() // Disable Device. Empty method, does nothing.
-- _SB.ALS._ALI() // Ambient Light Illuminance. Returns the following values: 0x32, 0xC8, 0x190, 0x258, 0x320.
-- _SB.ALS._ALR() // Ambient Light Response. Returns [[0x30, 0x0], [0x30, 0x32], [0x64, 0xC8], [0x7D, 0x0190], [0xA0, 0x0258], [0xD0, 0x0320]].
+- \_SB.ALS._HID() // Hardware ID. Return ACPI0008
+- \_SB.ALS._STA() // Status. Always return 0x0B
+- \_SB.ALS._DIS() // Disable Device. Empty method, does nothing.
+- \_SB.ALS._ALI() // Ambient Light Illuminance. Returns one of the following values: 0x32 (min illuminance), 0xC8, 0x190, 0x258, 0x320 (max illuminance).
+- \_SB.ALS._ALR() // Ambient Light Response. Returns [[0x30, 0x0], [0x30, 0x32], [0x64, 0xC8], [0x7D, 0x0190], [0xA0, 0x0258], [0xD0, 0x0320]].
 
 Note:
 For enable/disable ALS device, you must call \_SB.PCI0.LPCB.EC0.TALS method with 0x1/0x0 integer.
+
+What methods notify ALS device about changes:
+- \_SB.ATKD.ALSC (status changed)
+- \_SB.PCI0.LPCB.EC0.EC0W 
+- \_SB.PCI0.LPCB.EC0._QCD (illuminance changed)
+- \_SB.PCI0.LPCB.EC0._QDD (illuminance changed)

@@ -25,3 +25,7 @@ What methods notify ALS device about changes:
 - \_SB.PCI0.LPCB.EC0.EC0W 
 - \_SB.PCI0.LPCB.EC0._QCD (illuminance changed)
 - \_SB.PCI0.LPCB.EC0._QDD (illuminance changed)
+
+What methods control ALS device:
+- \_SB.ATKD.ALSC
+- \_SB.PCI0.LPCB.EC0.TALS

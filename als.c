@@ -21,7 +21,7 @@ static const struct acpi_device_id als_device_ids[] = {
 MODULE_DEVICE_TABLE(acpi, als_device_ids);
 
 static struct acpi_driver als_driver = {
-	.name = "asus-als",
+	.name = "als",
 	.class = "ALS",
 	.ids = als_device_ids,
 	.ops =
@@ -64,10 +64,11 @@ static const struct attribute_group als_attr_group = {
 
 static int als_add(struct acpi_device *device)
 {
-	int result = sysfs_create_group(&device->dev.kobj, &als_attr_group);
-	return 0;
+	int result;
+	result = sysfs_create_group(&device->dev.kobj, &als_attr_group);
+	return result;
 }
-
+	
 static int als_remove(struct acpi_device *device, int type)
 {
 	sysfs_remove_group(&device->dev.kobj, &als_attr_group);

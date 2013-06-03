@@ -10,12 +10,11 @@ MODULE_DESCRIPTION("Ambient Light Sensor Driver");
 MODULE_LICENSE("GPL");
 
 static int als_add(struct acpi_device *device);
-static int als_remove(struct acpi_device *device, int type);
+static int als_remove(struct acpi_device *device);
 static void als_notify(struct acpi_device *device, u32 event);
 
 static const struct acpi_device_id als_device_ids[] = {
 	{ "ACPI0008", 0},
-	//    { "PNP0C02", 0},
 	{ "", 0},
 };
 MODULE_DEVICE_TABLE(acpi, als_device_ids);
@@ -69,7 +68,7 @@ static int als_add(struct acpi_device *device)
 	return result;
 }
 	
-static int als_remove(struct acpi_device *device, int type)
+static int als_remove(struct acpi_device *device)
 {
 	sysfs_remove_group(&device->dev.kobj, &als_attr_group);
 	return 0;

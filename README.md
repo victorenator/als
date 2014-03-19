@@ -29,3 +29,16 @@ What methods notify ALS device about changes:
 What methods control ALS device:
 - \_SB.ATKD.ALSC
 - \_SB.PCI0.LPCB.EC0.TALS
+
+Stack:
+\_SB.ALS._ALI ()
+    ^^PCI0.LPCB.EC0.RALS ()
+        if (ALAE) {
+            v = RRAM (0x04C9)
+            if (v <= 1) return 0x32;
+            else if (v <= 0x06) return 0xC8;
+            else if (v <= 0x09) return 0x0190;
+            else if (v <= 0x0E) return 0x0258;
+            else return 0x0320;
+
+        } else return 0xC8

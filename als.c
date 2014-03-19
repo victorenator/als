@@ -2,8 +2,7 @@
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/types.h>
-#include <acpi/acpi_bus.h>
-#include <acpi/acpi_drivers.h>
+#include <linux/acpi.h>
 
 MODULE_AUTHOR("Viktar Vauchkevich <victorenator@gmail.com>");
 MODULE_DESCRIPTION("Ambient Light Sensor Driver");
@@ -14,8 +13,8 @@ static int als_remove(struct acpi_device *device);
 static void als_notify(struct acpi_device *device, u32 event);
 
 static const struct acpi_device_id als_device_ids[] = {
-	{ "ACPI0008", 0},
-	{ "", 0},
+	{"ACPI0008", 0},
+	{},
 };
 MODULE_DEVICE_TABLE(acpi, als_device_ids);
 

@@ -43,6 +43,7 @@ ALS related paths:
 - \_SB.PCI0.LPCB.EC0.OLUX // Old LUX
 
 Stack:
+```
 \_SB.ALS._ALI ()
     ^^PCI0.LPCB.EC0.RALS ()
         if (ALAE) {
@@ -54,3 +55,4 @@ Stack:
             else return 0x0320;
 
         } else return 0xC8
+```

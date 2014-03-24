@@ -19,16 +19,28 @@ Asus Zenbook:
 
 Note:
 For enable/disable ALS device, you must call \_SB.PCI0.LPCB.EC0.TALS method with 0x1/0x0 integer.
+For notifications set acpi_osi="Windows 2012".
 
 What methods notify ALS device about changes:
-- \_SB.ATKD.ALSC (status changed)
+- \_SB.ATKD.ALSC (flag) // status changed
 - \_SB.PCI0.LPCB.EC0.EC0W 
-- \_SB.PCI0.LPCB.EC0._QCD (illuminance changed)
-- \_SB.PCI0.LPCB.EC0._QDD (illuminance changed)
+- \_SB.PCI0.LPCB.EC0._QCD () // illuminance changed
+- \_SB.PCI0.LPCB.EC0._QDD () // illuminance changed
 
 What methods control ALS device:
-- \_SB.ATKD.ALSC
-- \_SB.PCI0.LPCB.EC0.TALS
+- \_SB.ATKD.ALSC (flag) // ALS Control
+- \_SB.PCI0.LPCB.EC0.TALS (flag)
+
+ALS device status:
+- \_SB.ATKD.GALS () & 0x10 // Get ALs Status
+
+ALS related paths:
+- \_SB.ALAE // ALS Device Enabled; 0-1
+- \_SB.LSTP // Light Sensor ? Present; 1
+- \_SB.ALS.LUXL // LUX Level; 0
+- \_SB.PCI0.LPCB.EC0 // Embedded Controller ITE IT8572G
+- \_SB.PCI0.LPCB.EC0.RRAM (0x04C9) // Read RAM; returns 0x0-0xF
+- \_SB.PCI0.LPCB.EC0.OLUX // Old LUX
 
 Stack:
 \_SB.ALS._ALI ()

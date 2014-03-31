@@ -56,3 +56,7 @@ Stack:
 
         } else return 0xC8
 ```
+
+UX31A Notes:
+==
+ALS connected to IT8572G via GPI0

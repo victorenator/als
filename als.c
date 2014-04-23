@@ -51,8 +51,75 @@ static ssize_t als_show_ali(struct device *dev,
 
 static DEVICE_ATTR(ali, S_IRUGO, als_show_ali, NULL);
 
+static acpi_handle acpi_handle_from_string(const char *str) {
+	acpi_handle handle;
+	acpi_status handle_status;
+	handle_status = acpi_get_handle(NULL, (acpi_string) str, &handle);
+
+	if (ACPI_FAILURE(handle_status)) {
+		return NULL;
+	} else {
+		return handle;
+	}
+}
+
+static ssize_t als_enable_disable(struct device *dev, struct device_attribute *attr,
+	const char *buf, size_t count)
+{
+	if (count >= 1) {
+    acpi_handle tals_handle;
+		struct acpi_object_list arg;
+		union acpi_object param_0, param_1;
+
+		param_0.type = ACPI_TYPE_INTEGER;
+		param_0.integer.value = 0;
+		param_1.type = ACPI_TYPE_INTEGER;
+		param_1.integer.value = 1;
+
+    tals_handle = acpi_handle_from_string("\\_SB.PCI0.LPCB.EC0.TALS");
+    if (tals_handle == NULL) {
+			printk(KERN_ERR "als: failed reading \\_SB.PCI0.LPCB.EC0.TALS\n");
+			return count;
+		}
+
+		if (buf[0] == '0') {
+			// Disable
+			acpi_status result;
+
+			arg.count = 1;
+			arg.pointer = &param_0;
+			result = acpi_evaluate_object(tals_handle, NULL, &arg, NULL);
+
+		} else if (buf[0] == '1') {
+			// Enable
+			acpi_handle alsc_handle;
+			acpi_status result;
+
+			arg.count = 1;
+			arg.pointer = &param_1;
+			result = acpi_evaluate_object(tals_handle, NULL, &arg, NULL);
+
+		  alsc_handle = acpi_handle_from_string("\\_SB.ATKD.ALSC");
+		  if (alsc_handle == NULL) {
+				printk(KERN_ERR "als: failed reading \\_SB.ATKD.ALSC\n");
+				return count;
+			}
+
+			result = acpi_evaluate_object(alsc_handle, NULL, &arg, NULL);
+		}
+
+		return count;
+
+	} else {
+		return count;
+	}
+}
+
+static DEVICE_ATTR(enable, S_IWUSR, NULL, als_enable_disable);
+
 static struct attribute *als_attributes[] = {
 	&dev_attr_ali.attr,
+	&dev_attr_enable.attr,
 	NULL
 };
 

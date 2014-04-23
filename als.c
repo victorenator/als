@@ -67,7 +67,7 @@ static ssize_t als_enable_disable(struct device *dev, struct device_attribute *a
 	const char *buf, size_t count)
 {
 	if (count >= 1) {
-    acpi_handle tals_handle;
+		acpi_handle tals_handle;
 		struct acpi_object_list arg;
 		union acpi_object param_0, param_1;
 
@@ -76,9 +76,9 @@ static ssize_t als_enable_disable(struct device *dev, struct device_attribute *a
 		param_1.type = ACPI_TYPE_INTEGER;
 		param_1.integer.value = 1;
 
-    tals_handle = acpi_handle_from_string("\\_SB.PCI0.LPCB.EC0.TALS");
-    if (tals_handle == NULL) {
-			printk(KERN_ERR "als: failed reading \\_SB.PCI0.LPCB.EC0.TALS\n");
+		tals_handle = acpi_handle_from_string("\\_SB.PCI0.LPCB.EC0.TALS");
+		if (tals_handle == NULL) {
+			printk(KERN_ERR "als: unable to get handle for \\_SB.PCI0.LPCB.EC0.TALS\n");
 			return count;
 		}
 
@@ -99,9 +99,9 @@ static ssize_t als_enable_disable(struct device *dev, struct device_attribute *a
 			arg.pointer = &param_1;
 			result = acpi_evaluate_object(tals_handle, NULL, &arg, NULL);
 
-		  alsc_handle = acpi_handle_from_string("\\_SB.ATKD.ALSC");
-		  if (alsc_handle == NULL) {
-				printk(KERN_ERR "als: failed reading \\_SB.ATKD.ALSC\n");
+			alsc_handle = acpi_handle_from_string("\\_SB.ATKD.ALSC");
+			if (alsc_handle == NULL) {
+				printk(KERN_ERR "als: unable to get handle for \\_SB.ATKD.ALSC\n");
 				return count;
 			}
 

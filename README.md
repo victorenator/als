@@ -8,6 +8,8 @@ Device /sys/bus/acpi/devices/ACPI0008:00 (ACPI path: \_SB.ALS).
 Exported attributes:
 - ali (Ambient Light Illuminance) (ACPI path: \_SB.ALS._ALI)
 - enable (write 1 or 0 to this attribute to enable or disable the sensor)
+- raw_value (value from EC) (ACPI path: \_SB.PCI0.LPCB.EC0.RRAM 0x04c9)
+- raw_max = 0xf (const value)
 
 
 Asus Zenbook:

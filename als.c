@@ -11,6 +11,7 @@ MODULE_LICENSE("GPL");
 static int als_add(struct acpi_device *device);
 static int als_remove(struct acpi_device *device);
 static void als_notify(struct acpi_device *device, u32 event);
+static acpi_handle acpi_handle_from_string(const char *str);
 
 static const struct acpi_device_id als_device_ids[] = {
 	{"ACPI0008", 0},
@@ -49,7 +50,67 @@ static ssize_t als_show_ali(struct device *dev,
 	return sprintf(buf, "%d\n", als_get_ali(device));
 }
 
-static DEVICE_ATTR(ali, S_IRUGO, als_show_ali, NULL);
+static u32 als_get_raw_value(struct acpi_device *device)
+{
+	acpi_status status;
+	acpi_handle handle;
+	char path[] = "\\_SB.PCI0.LPCB.EC0.RRAM";
+	u32 addr = 0x04c9;
+	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+	union acpi_object arg0; //TODO: inplace union initialization
+	struct acpi_object_list arg = { .count = 1, .pointer = &arg0 };
+	u32 raw_value; //function result
+	union acpi_object* result = NULL; //buffer result
+
+	// prepare parameters
+	arg0.type = ACPI_TYPE_INTEGER;
+	arg0.integer.value = addr;
+
+	// get the handle of the method, must be a fully qualified path
+	handle = acpi_handle_from_string(path);
+	if (NULL == handle)
+	{
+		printk(KERN_ERR "als: unable to get handle for: %s\n", path);
+		return -1;
+	}
+
+	//get value
+	status = acpi_evaluate_object(handle, NULL, &arg, &buffer);
+	if (ACPI_FAILURE(status))
+	{
+		printk(KERN_ERR "als: unable to evalute: %s 0x%04x\n", path, addr);
+		return -1;
+	}
+
+	result = buffer.pointer;
+	if (ACPI_TYPE_INTEGER != result->type)
+	{
+		kfree(buffer.pointer);
+		return -1;
+	}
+	raw_value = result->integer.value;
+
+	kfree(buffer.pointer);
+	return raw_value;
+}
+
+static ssize_t als_show_raw_value(struct device *dev,
+	struct device_attribute *attr, char *buf)
+{
+	struct acpi_device *device = to_acpi_device(dev);
+
+	return sprintf(buf, "%d\n", als_get_raw_value(device));
+}
+
+static ssize_t als_show_raw_max(struct device *dev,
+	struct device_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d\n", 0xf );
+}
+
+static DEVICE_ATTR(ali,         S_IRUGO, als_show_ali,          NULL);
+static DEVICE_ATTR(raw_value,   S_IRUGO, als_show_raw_value,    NULL);
+static DEVICE_ATTR(raw_max,     S_IRUGO, als_show_raw_max,      NULL);
 
 static acpi_handle acpi_handle_from_string(const char *str) {
 	acpi_handle handle;
@@ -120,6 +181,8 @@ static DEVICE_ATTR(enable, S_IWUSR, NULL, als_enable_disable);
 static struct attribute *als_attributes[] = {
 	&dev_attr_ali.attr,
 	&dev_attr_enable.attr,
+	&dev_attr_raw_value.attr,
+	&dev_attr_raw_max.attr,
 	NULL
 };
 

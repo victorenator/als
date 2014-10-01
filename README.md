@@ -3,7 +3,7 @@ ALS (Ambient Light Sensor) Driver
 
 ASUS Zenbook Ambient Light Sensor Driver.
 
-Device /sys/bus/acpi/devices/ACPI0008:00 (ACPI path: \_SB.ALS). 
+Device /sys/bus/acpi/devices/ACPI0008:00 (ACPI path: \_SB.ALS).
 
 Exported attributes:
 - ali (Ambient Light Illuminance) (ACPI path: \_SB.ALS._ALI)
@@ -11,6 +11,17 @@ Exported attributes:
 - raw_value (value from EC) (ACPI path: \_SB.PCI0.LPCB.EC0.RRAM 0x04c9)
 - raw_max = 0xf (const value)
 
+Installation with DKMS
+==
+
+Under root:
+
+    cd /usr/src && \
+      wget https://github.com/danieleds/als/archive/master.tar.gz && \
+      tar xvf als-master.tar.gz
+    dkms add -m als -v master
+    dkms install -m als -v master
+    echo als >>/etc/modules
 
 Asus Zenbook:
 ==
@@ -26,7 +37,7 @@ For notifications set acpi_osi="Windows 2012".
 
 What methods notify ALS device about changes:
 - \_SB.ATKD.ALSC (flag) // status changed
-- \_SB.PCI0.LPCB.EC0.EC0W 
+- \_SB.PCI0.LPCB.EC0.EC0W
 - \_SB.PCI0.LPCB.EC0._QCD () // illuminance changed
 - \_SB.PCI0.LPCB.EC0._QDD () // illuminance changed
 
